@@ -73,4 +73,42 @@ static class Pair{
         return path;
 
     }
+
+//    https://www.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1
+
+    public int[] dijkstra(int V, int[][] edges, int src) {
+        ArrayList<ArrayList<pair>> adj = new ArrayList<>();
+        for(int i=0;i<V;i++){
+            adj.add(new ArrayList<>());
+        }
+        for (int index = 0; index < edges.length; index++) {
+            adj.get(edges[index][0]).add(new pair(edges[index][1],edges[index][2]));
+            adj.get(edges[index][1]).add(new pair(edges[index][0],edges[index][2]));
+        }
+        int [] parent = new int[V];
+        int [] dist = new int [V];
+
+        for (int index = 0; index < V ; index++) {
+            parent[index] = index;
+            dist[index] = Integer.MAX_VALUE;
+        }
+        PriorityQueue<pair> pq = new PriorityQueue<pair>((x, y) -> x.first - y.first);
+        pq.add(new pair(0,src));
+        dist[src] = 0;
+        while(!pq.isEmpty()){
+            pair it = pq.poll();
+            int node = it.second;
+            int dis = it.first;
+            for(pair iter : adj.get(node)){
+                int adjNode = iter.first;
+                int adjW = iter.second;
+                if(dis + adjW < dist[adjNode]){
+                    dist[adjNode] = dis+adjW;
+                    pq.add(new pair(dist[adjNode] , adjNode));
+                    parent[adjNode] = node;
+                }
+            }
+        }
+        return dist;
+    }
 }
